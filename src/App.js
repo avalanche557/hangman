@@ -6,11 +6,14 @@ import Words from './components/Words';
 import Notifcation from './components/Notifcation';
 import Popup from './components/Popup';
 import { showNotification as show } from './utils/utils';
+import { getWordList } from './api/api';
 import './App.css';
 
-const words = ['application', 'programming', 'interface', 'wizard'];
+let words = ['application', 'programming', 'interface', 'wizard'];
 
 let selectedWord = words[Math.floor(Math.random() * words.length)];
+
+
 
 let playable = true;
 
@@ -19,11 +22,15 @@ const wrongLetters = [];
 
 function App() {
   const [playable, setPlayable] = useState(true);
+  const [count, setCount] = useState(0)
   const [correctLetters, setCorrectLetters] = useState([])
   const [wrongLetters, setWrongLetters] = useState([])
   const [showNotification, setShowNotification] = useState(false)
 
   useEffect(() => {
+    if(count === 0) {
+      getWords()
+    }
     const handleKeydown = (event) => {
       const { key, keyCode } = event
       if (playable && keyCode >= 65 && keyCode <= 90) {
@@ -59,6 +66,12 @@ function App() {
     selectedWord = words[random]
   }
 
+  const getWords = async () => {
+    words = await getWordList()
+    const random = Math.floor(Math.random() * words.length)
+    selectedWord = words[random]
+    setCount(count + 1)
+  }
 
   return (
     <>
